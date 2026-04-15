@@ -1,0 +1,122 @@
+[
+    {
+        "activeIngredient": "Paracetamol",
+        "brandName": "Panadol",
+        "strength": 500,
+        "form": "tablet"
+    },
+    {
+        "activeIngredient": "Paracetamol",
+        "brandName": "Panadol Osteo",
+        "strength": 665,
+        "form": "tablet"
+    },
+    {
+        "activeIngredient": "Ibuprofen",
+        "brandName": "Nurofen",
+        "strength": 200,
+        "form": "tablet"
+    },
+    {
+        "activeIngredient": "Ibuprofen",
+        "brandName": "Nurofen",
+        "strength": 400,
+        "form": "tablet"
+    },
+    {
+        "activeIngredient": "Ibuprofen",
+        "brandName": "Nurofen for Children",
+        "strength": 100,
+        "form": "liquid"
+    },
+    {
+        "activeIngredient": "Amoxicillin",
+        "brandName": "Amoxil",
+        "strength": 500,
+        "form": "capsule"
+    },
+    {
+        "activeIngredient": "Amoxicillin",
+        "brandName": "Amoxil",
+        "strength": 250,
+        "form": "liquid"
+    },
+    {
+        "activeIngredient": "Cetirizine",
+        "brandName": "Zyrtec",
+        "strength": 10,
+        "form": "tablet"
+    },
+    {
+        "activeIngredient": "Loratadine",
+        "brandName": "Claratyne",
+        "strength": 10,
+        "form": "tablet"
+    },
+    {
+        "activeIngredient": "Omeprazole",
+        "brandName": "Losec",
+        "strength": 20,
+        "form": "capsule"
+    },
+    {
+        "activeIngredient": "Omeprazole",
+        "brandName": "Losec",
+        "strength": 40,
+        "form": "capsule"
+    },
+    {
+        "activeIngredient": "Atorvastatin",
+        "brandName": "Lipitor",
+        "strength": 20,
+        "form": "tablet"
+    },
+    {
+        "activeIngredient": "Metformin",
+        "brandName": "Glucophage",
+        "strength": 500,
+        "form": "tablet"
+    },
+    {
+        "activeIngredient": "Metformin",
+        "brandName": "Glucophage",
+        "strength": 1000,
+        "form": "tablet"
+    },
+    {
+        "activeIngredient": "Salbutamol",
+        "brandName": "Ventolin",
+        "strength": 100,
+        "form": "other"
+    },
+    {
+        "activeIngredient": "Sertraline",
+        "brandName": "Zoloft",
+        "strength": 50,
+        "form": "tablet"
+    },
+    {
+        "activeIngredient": "Doxycycline",
+        "brandName": "Vibramycin",
+        "strength": 100,
+        "form": "capsule"
+    },
+    {
+        "activeIngredient": "Codeine Phosphate",
+        "brandName": "Codalgin",
+        "strength": 30,
+        "form": "tablet"
+    },
+    {
+        "activeIngredient": "Prednisolone",
+        "brandName": "Panafcortelone",
+        "strength": 25,
+        "form": "tablet"
+    },
+    {
+        "activeIngredient": "Esomeprazole",
+        "brandName": "Nexium",
+        "strength": 20,
+        "form": "tablet"
+    }
+]
