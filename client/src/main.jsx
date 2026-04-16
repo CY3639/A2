@@ -1,22 +1,12 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { MantineProvider } from '@mantine/core';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App';
-import { theme } from './theme';
-import { AuthProvider } from './context/AuthContext';
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import App from './App.jsx'
  
-// mantine's base CSS — always import this first
-import '@mantine/core/styles.css';
+// must import Mantine CSS here, before anything else
+import '@mantine/core/styles.css'
  
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <MantineProvider theme={theme}>
-      <BrowserRouter>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
-      </BrowserRouter>
-    </MantineProvider>
-  </React.StrictMode>
-);
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
