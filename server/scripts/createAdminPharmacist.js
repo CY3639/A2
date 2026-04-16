@@ -24,7 +24,8 @@ const createAdmin = async () => {
             username: "admin",
             password: "admin123",
             userRole: "pharmacist",
-            isPharmacist: true
+            isPharmacist: true,
+            isApproved: true
         });
     } catch (e) {
         console.log("Failed to create new admin:", e.message);
