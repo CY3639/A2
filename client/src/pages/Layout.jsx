@@ -1,7 +1,18 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { AppShell, Container, Group, Anchor, Text } from '@mantine/core';
-import { Link, Outlet, useNavigate } from 'react-router-dom';
- 
+import { Link, Outlet, useNavigate, useLocation } from 'react-router-dom';
+
+const getIsPharmacist = () => {
+  const token = localStorage.getItem('jwt');
+  if (!token) return false;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.isPharmacist === true;
+  } catch {
+    return false;
+  }
+};
+
 const links = [
   { link: '/', label: 'Home' },
   { link: '/patients', label: 'Patients' },
@@ -10,14 +21,14 @@ const links = [
  
 function Layout() {
   const [active, setActive] = useState('/');
-  const [isAuthenticated, setIsAuthenticated] = useState(() => {
-    return !!localStorage.getItem('jwt');
-  });
+  const location = useLocation();  // to read isAuthenticated fresh on every render
   const navigate = useNavigate();
+
+  const isAuthenticated = useMemo(() => !!localStorage.getItem('jwt'), [location]);
+  const isPharmacist = useMemo(() => isAuthenticated ? getIsPharmacist() : false, [isAuthenticated]);
  
   const handleLogout = () => {
     localStorage.removeItem('jwt');
-    setIsAuthenticated(false);
     navigate('/');
   };
  
@@ -42,6 +53,9 @@ function Layout() {
             <Text size='xl' fw={700} c='teal'>MedProfile</Text>
             <Group gap='xs' align='center'>
               {items}
+              {isPharmacist && (
+                <Anchor component={Link} to='/admin' c='teal'>Approvals</Anchor>
+              )}
               {!isAuthenticated ? (
                 <>
                   <Anchor component={Link} to='/login' c='teal'>Login</Anchor>

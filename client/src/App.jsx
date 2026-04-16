@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import RegisterPending from './pages/RegPending';
+import AdminApproval from './pages/AdminApproval';
 import Patients from './pages/Patients';
 import PatientDetail from './pages/PatientDetail';
 import Medications from './pages/Medications';
@@ -23,6 +24,7 @@ function App() {
             <Route path='login' element={<Login />} />
             <Route path='register' element={<Register />} />
             <Route path='registered' element={<RegisterPending/>} />
+            <Route path='admin' element={<AdminApproval/>} />
             <Route path='patients' element={<Patients />} />
             <Route path='patients/:id' element={<PatientDetail />} />
             <Route path='medications' element={<Medications />} />
