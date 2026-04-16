@@ -36,7 +36,7 @@ function Register() {
         const data = await response.json();
         throw new Error(data.error || 'Registration failed');
       }
-      navigate('/login');
+      navigate('/registered');
     } catch (err) {
       setError(err.message);
     } finally {

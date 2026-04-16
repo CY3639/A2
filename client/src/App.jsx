@@ -6,6 +6,7 @@ import Layout from './pages/Layout';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import RegisterPending from './pages/RegPending';
 import Patients from './pages/Patients';
 import PatientDetail from './pages/PatientDetail';
 import Medications from './pages/Medications';
@@ -21,6 +22,7 @@ function App() {
             <Route index element={<Home />} />
             <Route path='login' element={<Login />} />
             <Route path='register' element={<Register />} />
+            <Route path='registered' element={<RegisterPending/>} />
             <Route path='patients' element={<Patients />} />
             <Route path='patients/:id' element={<PatientDetail />} />
             <Route path='medications' element={<Medications />} />
