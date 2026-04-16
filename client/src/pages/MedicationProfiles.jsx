@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Container, Title, Loader, Alert, Pagination } from '@mantine/core';
+import { Container, Title, Loader, Alert, Pagination, Button } from '@mantine/core';
 import { useParams } from 'react-router-dom';
 import ProfileEntry from '../components/ProfileEntry';
 import MedicationProfileForm from '../components/MedicationProfileForm';
@@ -48,16 +48,16 @@ function MedicationProfiles() {
     fetchProfiles();
   }, [id, page]);
   
-  const createMedicationProfile = async (profileData) => {
+const createMedicationProfile = async (profileData) => {
   const token = localStorage.getItem('jwt');
   try {
-    const response = await fetch(`${API_BASE_URL}/patients`, {
+    const response = await fetch(`${API_BASE_URL}/patients/${id}/medicationProfiles`, {
       method: 'POST',
       headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(patientData)
+      body: JSON.stringify(profileData)
     });
-    if (!response.ok) throw new Error('Failed to create patient');
-    fetchPatients();
+    if (!response.ok) throw new Error('Failed to create profile');
+    setPage(1); // triggers useEffect to re-fetch
   } catch (err) { console.error(err); }
 };
  
