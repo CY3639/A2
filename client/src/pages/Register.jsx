@@ -56,7 +56,7 @@ function Register() {
             { value: 'pharmacist', label: 'Pharmacist' },
             { value: 'pharmacy assistant', label: 'Pharmacy Assistant' },
           ]}
-          {...form.getInputProps('UserRole')} mb='sm'
+          {...form.getInputProps('userRole')} mb='sm'
         />
         <Button type='submit' fullWidth loading={loading}>Register</Button>
       </form>
