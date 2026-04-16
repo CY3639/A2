@@ -1,30 +1,36 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import DashboardPage from './pages/DashboardPage';
-import PatientsPage from './pages/PatientsPage';
-import PatientDetailPage from './pages/PatientDetailPage';
-import MedicationsPage from './pages/MedicationsPage';
-import MedicationProfilePage from './pages/MedicationProfilePage';
-import ProtectedRoute from './components/ProtectedRoute';
-
-export default function App() {
+import { MantineProvider } from '@mantine/core';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import '@mantine/core/styles.css';
+ 
+import Layout from './pages/Layout';
+import Home from './pages/Home';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Patients from './pages/Patients';
+import PatientDetail from './pages/PatientDetail';
+import Medications from './pages/Medications';
+import MedicationProfiles from './pages/MedicationProfiles';
+import NoPage from './pages/NoPage';
+ 
+function App() {
   return (
-    <Routes>
-      {/* public routes */}
-      <Route path='/login' element={<LoginPage />} />
-      <Route path='/register' element={<RegisterPage />} />
-
-      {/* protected routes - redirect to /login if not authenticated */}
-      <Route element={<ProtectedRoute />}>
-        <Route path='/' element={<DashboardPage />} />
-        <Route path='/patients' element={<PatientsPage />} />
-        <Route path='/patients/:id' element={<PatientDetailPage />} />
-        <Route path='/medications' element={<MedicationsPage />} />
-        <Route path='/profiles/:id' element={<MedicationProfilePage />} />
-      </Route>
-
-
-    </Routes>
-  )
+    <MantineProvider>
+      <BrowserRouter basename='/assessment02'>
+        <Routes>
+          <Route path='/' element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path='login' element={<Login />} />
+            <Route path='register' element={<Register />} />
+            <Route path='patients' element={<Patients />} />
+            <Route path='patients/:id' element={<PatientDetail />} />
+            <Route path='medications' element={<Medications />} />
+            <Route path='patients/:id/profiles' element={<MedicationProfiles />} />
+            <Route path='*' element={<NoPage />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </MantineProvider>
+  );
 }
+ 
+export default App;
