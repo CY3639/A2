@@ -1,25 +1,24 @@
 import { useState, useEffect } from 'react';
 import { Container, Title, Loader, Alert, TextInput, Pagination } from '@mantine/core';
 import MedicationItem from '../components/MedicationItem';
- 
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
- 
+
 function Medications() {
   const [medications, setMedications] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]= useState(null);
+  const [initialLoad, setInitialLoad] = useState(true);
+  const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [paginationLinks, setPaginationLinks] = useState({});
- 
+
   useEffect(() => {
-    const fetchMedications = async (searchTerm = '') => {
-      setLoading(true);
+    const fetchMedications = async () => {
       const token = localStorage.getItem('jwt');
-      if (!token) { setLoading(false); return; }
+      if (!token) { setInitialLoad(false); return; }
       try {
         const params = new URLSearchParams();
-        if (searchTerm) params.set('activeIngredient', searchTerm);
+        if (search) params.set('activeIngredient', search);
         params.set('page', page);
         params.set('limit', 10);
 
@@ -41,16 +40,16 @@ function Medications() {
           });
           setPaginationLinks(links);
         }
-
       } catch (err) { setError(err.message); }
-      finally { setLoading(false); }
+      finally { setInitialLoad(false); }
     };
-    fetchMedications(search);
+
+    fetchMedications();
   }, [search, page]);
- 
-  if (loading) return <Loader />;
-  if (error)   return <Alert color='red'>{error}</Alert>;
- 
+
+  if (initialLoad) return <Loader />;
+  if (error) return <Alert color='red'>{error}</Alert>;
+
   return (
     <Container size='lg'>
       <Title order={2} mb='md'>Medications</Title>
@@ -78,8 +77,8 @@ function Medications() {
         }
         mt='md'
       />
-
     </Container>
   );
 }
+
 export default Medications;

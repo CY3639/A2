@@ -7,7 +7,6 @@ function PatientForm({ opened, onClose, onSubmit }) {
     validate: {
       firstName: (v) => v.trim().length < 2 ? 'First name must be at least 2 characters' : null,
       lastName:  (v) => v.trim().length < 2 ? 'Last name must be at least 2 characters' : null,
-      address:   (v) => v.trim().length === 0 ? 'Address is required' : null,
     },
   });
  
@@ -24,7 +23,7 @@ function PatientForm({ opened, onClose, onSubmit }) {
           required mb='sm' {...form.getInputProps('firstName')} />
         <TextInput label='Last name' required mb='sm'
           {...form.getInputProps('lastName')} />
-        <TextInput label='Address' required mb='sm'
+        <TextInput label='Address' mb='sm'
           {...form.getInputProps('address')} />
         <Group justify='flex-end' mt='md'>
           <Button variant='default' onClick={onClose}>Cancel</Button>
