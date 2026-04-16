@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { AppShell, Container, Group, Anchor, Text } from '@mantine/core';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
  
@@ -10,14 +10,10 @@ const links = [
  
 function Layout() {
   const [active, setActive] = useState('/');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(() => {
+    return !!localStorage.getItem('jwt');
+  });
   const navigate = useNavigate();
- 
-  // Check if a JWT exists in localStorage when the app loads
-  useEffect(() => {
-    const token = localStorage.getItem('jwt');
-    setIsAuthenticated(!!token);
-  }, []);
  
   const handleLogout = () => {
     localStorage.removeItem('jwt');
