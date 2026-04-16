@@ -15,7 +15,7 @@ import NoPage from './pages/NoPage';
 function App() {
   return (
     <MantineProvider>
-      <BrowserRouter basename='/assessment02'>
+      <BrowserRouter basename='/a02'>
         <Routes>
           <Route path='/' element={<Layout />}>
             <Route index element={<Home />} />
