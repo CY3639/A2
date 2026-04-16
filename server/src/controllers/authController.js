@@ -49,3 +49,11 @@ exports.getPendingUsers = asyncHandler(async (req, res) => {
     const users = await User.find({ isApproved: false }).select('-password');
     res.json(users);
 });
+
+exports.declineUsers = asyncHandler(async (req, res) => {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+        return res.status(404).json({ error: "User not found" });
+    }
+    res.json({ message: "User declined and removed" });
+});

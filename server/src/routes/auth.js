@@ -17,6 +17,11 @@ router.route("/users/:id/approve")
 
 router.route("/users/pending")
     .all(authenticateWithJwt)
-    .get(authoriseRole(true), controller.getPendingUsers); // only pharmacist can view pending user registrations
+    .get(authoriseRole(true), controller.getPendingUsers) // only pharmacist can view pending user registrations
+
+router.route("/users/:id/decline")
+    .all(authenticateWithJwt)
+    .all(validateMongoId("id"))
+    .delete(authoriseRole(true), controller.declineUsers);
 
 module.exports = router;
