@@ -23,7 +23,7 @@ function Patients() {
       if (!token) { setInitialLoad(false); return; }
       try {
         const params = new URLSearchParams();
-        if (search) params.set('lastName', search);
+        if (search) params.set('name', search);
         params.set('sortBy', sortBy);
         params.set('sortOrder', sortOrder);
         params.set('page', page);
@@ -81,7 +81,7 @@ function Patients() {
       />
 
       <TextInput
-        placeholder='Search by patient last name...'
+        placeholder='Search by patient name...'
         value={search}
         onChange={(e) => {
           setSearch(e.target.value);
@@ -92,12 +92,8 @@ function Patients() {
 
       <Group mb='md'>
         <Select label='Sort by'
-          data={[{ value: 'lastName', label: 'Last name' }, { value: 'firstName', label: 'First name' }]}
+          data={[{ value: 'lastName', label: 'Last name (a-z)' }, { value: 'firstName', label: 'First name (a-z)' }]}
           value={sortBy} onChange={setSortBy} w={160}
-        />
-        <Select label='Order'
-          data={[{ value: 'asc', label: 'A to Z' }, { value: 'desc', label: 'Z to A' }]}
-          value={sortOrder} onChange={setSortOrder} w={120}
         />
       </Group>
 
