@@ -154,7 +154,7 @@ exports.update = [
 
         // remove timezone issue causing ceased/active status not displaying correctly
         const today = new Date().toISOString().split("T")[0];
-        const status = endDate && endDate < today ? "ceased" : "active";
+        const status = endDate && endDate <= today ? "ceased" : "active";
 
         const updatedProfile = await MedicationProfile.findByIdAndUpdate(
             req.params.profileId,

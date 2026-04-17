@@ -1,6 +1,6 @@
-import { Card, Text, Badge, Group, Stack } from '@mantine/core';
- 
-function ProfileEntry({ profile }) {
+import { Card, Text, Badge, Group, Stack, Button } from '@mantine/core';
+
+function ProfileEntry({ profile, onCease }) {
   const statusColor = profile.status === 'active' ? 'teal' : 'gray';
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder mb='sm'>
@@ -9,7 +9,14 @@ function ProfileEntry({ profile }) {
           <Text fw={600}>
             {profile.medication?.brandName} ({profile.medication?.activeIngredient})
           </Text>
-          <Badge color={statusColor} variant='light'>{profile.status}</Badge>
+          <Group gap='xs'>
+            <Badge color={statusColor} variant='light'>{profile.status}</Badge>
+            {profile.status === 'active' && onCease && (
+              <Button size='xs' color='red' variant='light' onClick={() => onCease(profile._id)}>
+                Cease
+              </Button>
+            )}
+          </Group>
         </Group>
         <Text size='sm'>Dose: {profile.dose} — {profile.frequency}</Text>
         <Text size='sm' c='dimmed'>
@@ -21,4 +28,5 @@ function ProfileEntry({ profile }) {
     </Card>
   );
 }
+
 export default ProfileEntry;
