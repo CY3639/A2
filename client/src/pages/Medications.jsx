@@ -27,6 +27,7 @@ function Medications() {
           url = `${API_BASE_URL}/medications/search?${params.toString()}`;
         } else {
           params.set('page', page);
+          params.set('limit', 10); 
           url = `${API_BASE_URL}/medications?${params.toString()}`;
         }
 
@@ -36,8 +37,19 @@ function Medications() {
         if (!response.ok) throw new Error(`Error: ${response.statusText}`);
         const data = await response.json();
         setMedications(data);
+
+        const linkHeader = response.headers.get('Link');
+        if (linkHeader) {
+          const links = {};
+          linkHeader.split(',').forEach(link => {
+            const match = link.match(/<([^>]+)>; rel="([^"]+)"/);
+            if (match) links[match[2]] = match[1];
+          });
+          setPaginationLinks(links);
+        }
+
       } catch (err) { setError(err.message); }
-      finally { setInitialLoad(false); }  // only flips once — never set back to true
+      finally { setInitialLoad(false); }
     };
 
     fetchMedications();
@@ -53,6 +65,20 @@ function Medications() {
       });
       if (!response.ok) throw new Error('Failed to create medication');
     } catch (err) { console.error(err); }
+  };
+
+  const deleteMedication = async (id) => {
+    const token = localStorage.getItem('jwt');
+    try {
+      const response = await fetch(`${API_BASE_URL}/medications/${id}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (!response.ok) throw new Error('Failed to delete medication');
+      setMedications(prev => prev.filter(m => m._id !== id));
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   if (initialLoad) return <Loader />;
@@ -79,7 +105,9 @@ function Medications() {
         onSubmit={createMedication}
       />
 
-      {medications.map(m => <MedicationItem key={m._id} medication={m} />)}
+      {medications.map(m => (
+        <MedicationItem key={m._id} medication={m} onDelete={deleteMedication} />
+      ))}
       {medications.length === 0 && <p>No medications found.</p>}
 
       {!search.trim() && (
