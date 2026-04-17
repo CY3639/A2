@@ -37,7 +37,7 @@ exports.list = [
             ? { $or: [{ firstName: new RegExp(searchTerm, "i") }, { lastName: new RegExp(searchTerm, "i") }] }
             : {};
         const patientPage = await Patient.paginate(filter, {
-            sort: { lastName: "asc" },
+            sort: { [req.query.sortBy || "lastName"]: req.query.sortOrder || "asc" },
             ...req.paginate
         });
 
