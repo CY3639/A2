@@ -55,6 +55,22 @@ function PatientDetail() {
     } catch (err) { console.error(err); }
   };
 
+  const ceaseMedication = async (profileId) => {
+  const token = localStorage.getItem('jwt');
+  try {
+    const today = new Date().toISOString().split('T')[0];
+    const response = await fetch(`${API_BASE_URL}/patients/${id}/medicationProfiles/${profileId}`, {
+      method: 'PUT',
+      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ endDate: today }),
+    });
+    if (!response.ok) throw new Error('Failed to cease medication');
+    setRefresh(r => r + 1);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
   if (loading) return <Loader />;
   if (error)   return <Alert color='red'>{error}</Alert>;
   if (!patient) return null;
@@ -85,8 +101,9 @@ function PatientDetail() {
 
       {profiles.length === 0
         ? <Text c='dimmed'>No medication profile entries found.</Text>
-        : profiles.map(p => <ProfileEntry key={p._id} profile={p} />)
+        : profiles.map(p => <ProfileEntry key={p._id} profile={p} onCease={ceaseMedication} />)
       }
+
     </Container>
   );
 }
