@@ -18,6 +18,10 @@ const patientValidator = () => {
 
 // get all patients
 exports.list = [
+    query("name")
+        .optional()
+        .trim(),
+    
     query("lastName")
         .optional()
         .trim(),
@@ -27,13 +31,15 @@ exports.list = [
         if (!valid.isEmpty()) {
             return res.status(400).json({ errors: valid.array() });
         }
-        
-        const lastName = req.query.lastName;
 
-        const patientPage = await Patient.paginate(
-            { lastName: new RegExp(lastName, 'i') },
-            { sort: { lastName: "asc" }, ...req.paginate }
-        );
+        const searchTerm = req.query.name || req.query.lastName || "";
+        const filter = searchTerm
+            ? { $or: [{ firstName: new RegExp(searchTerm, "i") }, { lastName: new RegExp(searchTerm, "i") }] }
+            : {};
+        const patientPage = await Patient.paginate(filter, {
+            sort: { lastName: "asc" },
+            ...req.paginate
+        });
 
         res
             .status(200)
