@@ -5,6 +5,17 @@ import MedicationForm from '../components/MedicationForm';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+const getIsPharmacist = () => {
+  const token = localStorage.getItem('jwt');
+  if (!token) return false;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.isPharmacist === true;
+  } catch {
+    return false;
+  }
+};
+
 function Medications() {
   const [medications, setMedications] = useState([]);
   const [initialLoad, setInitialLoad] = useState(true);
@@ -13,6 +24,7 @@ function Medications() {
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [paginationLinks, setPaginationLinks] = useState({});
+  const isPharmacist = getIsPharmacist();
 
   useEffect(() => {
     const fetchMedications = async () => {
@@ -98,7 +110,9 @@ function Medications() {
         mb='md'
       />
 
-      <Button mb='md' onClick={() => setModalOpen(true)}>Add Medication</Button>
+      { isPharmacist && (
+        <Button mb='md' onClick={() => setModalOpen(true)}>Add Medication</Button>
+      )}
       <MedicationForm
         opened={modalOpen}
         onClose={() => setModalOpen(false)}
