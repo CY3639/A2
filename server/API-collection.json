@@ -10,7 +10,7 @@
       "key": "baseUrl",
       "value": "https://lyrebird04.ifn666.com/a02/api",
       "type": "string"
-    },
+    },    
     {
       "key": "token",
       "value": "",
@@ -40,6 +40,11 @@
       "value": "",
       "type": "string",
       "description": "MongoDB ObjectId of a user (for approve/decline)"
+    },
+    {
+      "key": "baseUrl.local",
+      "value": "http://localhost:6001/api",
+      "type": "string"
     }
   ],
   "auth": {
