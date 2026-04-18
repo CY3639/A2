@@ -42,7 +42,7 @@
       "description": "MongoDB ObjectId of a user (for approve/decline)"
     },
     {
-      "key": "baseUrLocal",
+      "key": "baseUrlLocal",
       "value": "http://localhost:6001/api",
       "type": "string"
     }

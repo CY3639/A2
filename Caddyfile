@@ -24,11 +24,11 @@ lyrebird04.ifn666.com {
                 uri strip_prefix /taskmanager
                 reverse_proxy localhost:4000
         }
-        handle /assignment2/api/* {
+        handle /a02/api/* {
                 uri strip_prefix /a02
                 reverse_proxy localhost:6001
         }
-        handle /assignment2/* {
+        handle /a02/* {
                 root * /var/www/html/a02
                 uri strip_prefix /a02
                 try_files {path} /index.html
