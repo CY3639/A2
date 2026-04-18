@@ -16,24 +16,19 @@ lyrebird04.ifn666.com {
         handle {
                 reverse_proxy localhost:3002
         }
-        handle /locallib/* {
-                uri strip_prefix /locallib
-                reverse_proxy localhost:3005
-        }
-        handle /taskmanager/* {
-                uri strip_prefix /taskmanager
-                reverse_proxy localhost:4000
-        }
+
         handle /a02/api/* {
                 uri strip_prefix /a02
                 reverse_proxy localhost:6001
         }
+
         handle /a02/* {
-                root * /var/www/html/a02
+                root * /var/www/a02
                 uri strip_prefix /a02
                 try_files {path} /index.html
                 file_server
         }
+
         log {
                 output file /var/www/caddy.log
                 level debug
