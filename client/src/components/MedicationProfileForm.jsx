@@ -1,11 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
-import { Modal, Autocomplete, TextInput, Button, Group } from '@mantine/core';
+import { Modal, Autocomplete, TextInput, Button, Group, Text } from '@mantine/core';
 import { DateInput } from '@mantine/dates';
 import { useForm } from '@mantine/form';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-function MedicationProfileForm({ opened, onClose, onSubmit }) {
+// profile prop = edit mode, no profile prop = create mode
+function MedicationProfileForm({ opened, onClose, onSubmit, profile }) {
+  const isEditMode = Boolean(profile);
+
   const [drugSearch, setDrugSearch] = useState('');
   const [drugOptions, setDrugOptions] = useState([]);
   const [selectedId, setSelectedId] = useState('');
@@ -13,15 +16,36 @@ function MedicationProfileForm({ opened, onClose, onSubmit }) {
   const justSelected = useRef(false);
 
   const form = useForm({
-    initialValues: { startDate: null, dose: '', frequency: '', notes: '' },
+    initialValues: {
+      startDate: null,
+      dose: '',
+      frequency: '',
+      notes: '',
+      endDate: null,
+    },
     validate: {
-      startDate: (v) => !v ? 'Start date is required' : null,
+      startDate: (v) => (!isEditMode && !v) ? 'Start date is required' : null,
       dose: (v) => v.trim().length === 0 ? 'Dose is required' : null,
       frequency: (v) => v.trim().length === 0 ? 'Frequency is required' : null,
     },
   });
 
+  // pre-populate when edit mode opens
   useEffect(() => {
+    if (opened && isEditMode && profile) {
+      form.setValues({
+        dose: profile.dose || '',
+        frequency: profile.frequency || '',
+        notes: profile.notes || '',
+        startDate: profile.startDate ? new Date(profile.startDate) : null,
+        endDate: profile.endDate ? new Date(profile.endDate) : null,
+      });
+    }
+  }, [opened, profile]);
+
+  // medication search for create mode only
+  useEffect(() => {
+    if (isEditMode) return;
     if (drugSearch.trim().length === 0) {
       setDrugOptions([]);
       return;
@@ -47,7 +71,7 @@ function MedicationProfileForm({ opened, onClose, onSubmit }) {
       }
     };
     fetchMedications();
-  }, [drugSearch]);
+  }, [drugSearch, isEditMode]);
 
   const handleOptionSubmit = (value) => {
     justSelected.current = true;
@@ -76,15 +100,27 @@ function MedicationProfileForm({ opened, onClose, onSubmit }) {
   };
 
   const handleSubmit = (values) => {
-    if (!selectedId) {
+    if (!isEditMode && !selectedId) {
       setDrugError('Please select a medication');
       return;
     }
-    onSubmit({
-      medicationId: selectedId,
-      ...values,
-      startDate: new Date(values.startDate).toISOString(),
-    });
+
+    if (isEditMode) {
+      onSubmit({
+        dose: values.dose,
+        frequency: values.frequency,
+        notes: values.notes,
+        endDate: values.endDate ? new Date(values.endDate).toISOString().split('T')[0] : undefined,
+      });
+    } else {
+      onSubmit({
+        medication: selectedId,
+        ...values,
+        startDate: new Date(values.startDate).toISOString(),
+        endDate: values.endDate ? new Date(values.endDate).toISOString().split('T')[0] : undefined,
+      });
+    }
+
     reset();
     onClose();
   };
@@ -95,26 +131,46 @@ function MedicationProfileForm({ opened, onClose, onSubmit }) {
   };
 
   return (
-    <Modal opened={opened} onClose={handleClose} title='Add Medication to Profile'>
+    <Modal
+      opened={opened}
+      onClose={handleClose}
+      title={isEditMode ? 'Edit Medication Profile' : 'Add Medication to Profile'}
+    >
       <form onSubmit={form.onSubmit(handleSubmit)}>
-        <Autocomplete
-          label='Medication'
-          placeholder='Type a drug or brand name...'
-          data={drugOptions}
-          value={drugSearch}
-          onChange={handleChange}
-          onOptionSubmit={handleOptionSubmit}
-          error={drugError}
-          required
-          mb='sm'
-        />
-        <DateInput
-          label='Start Date'
-          placeholder='Select a date'
-          required
-          mb='sm'
-          {...form.getInputProps('startDate')}
-        />
+
+        {/* Create mode only — medication search */}
+        {!isEditMode && (
+          <Autocomplete
+            label='Medication'
+            placeholder='Type a drug or brand name...'
+            data={drugOptions}
+            value={drugSearch}
+            onChange={handleChange}
+            onOptionSubmit={handleOptionSubmit}
+            error={drugError}
+            required
+            mb='sm'
+          />
+        )}
+
+        {/* Edit mode — show medication name as read-only */}
+        {isEditMode && profile?.medication && (
+          <Text size='sm' fw={600} mb='sm'>
+            {profile.medication.brandName} ({profile.medication.activeIngredient})
+          </Text>
+        )}
+
+        {/* Start date only shown in create mode */}
+        {!isEditMode && (
+          <DateInput
+            label='Start Date'
+            placeholder='Select a date'
+            required
+            mb='sm'
+            {...form.getInputProps('startDate')}
+          />
+        )}
+
         <TextInput label='Dose' required mb='sm' {...form.getInputProps('dose')} />
         <TextInput label='Frequency' required mb='sm' {...form.getInputProps('frequency')} />
         <TextInput
@@ -123,9 +179,19 @@ function MedicationProfileForm({ opened, onClose, onSubmit }) {
           mb='sm'
           {...form.getInputProps('notes')}
         />
+
+        {/* End date available in both modes */}
+        <DateInput
+          label='End Date'
+          placeholder='Select a date (optional)'
+          clearable
+          mb='sm'
+          {...form.getInputProps('endDate')}
+        />
+
         <Group justify='flex-end' mt='md'>
           <Button variant='default' onClick={handleClose}>Cancel</Button>
-          <Button type='submit'>Save</Button>
+          <Button type='submit'>{isEditMode ? 'Update' : 'Save'}</Button>
         </Group>
       </form>
     </Modal>
