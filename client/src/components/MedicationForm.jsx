@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Modal, TextInput, Select, Button, Group } from '@mantine/core';
+import { Modal, TextInput, Select, Button, Group, Text } from '@mantine/core';
 import { useForm } from '@mantine/form';
 
 function MedicationForm({ opened, onClose, onSubmit }) {
