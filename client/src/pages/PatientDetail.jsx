@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Container, Title, Text, Loader, Alert, Button, Card, Stack } from '@mantine/core';
+import { Container, Title, Text, Loader, Alert, Button, Card, Stack, Modal, Group } from '@mantine/core';
 import { useParams, useNavigate } from 'react-router-dom';
 import ProfileEntry from '../components/ProfileEntry';
 import MedicationProfileForm from '../components/MedicationProfileForm';
@@ -26,6 +26,7 @@ function PatientDetail() {
   const [error, setError]         = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [refresh, setRefresh]     = useState(0);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const isPharmacist = getIsPharmacist();
 
   useEffect(() => {
@@ -83,6 +84,20 @@ function PatientDetail() {
   }
 };
 
+const deletePatient = async () => {
+  const token = localStorage.getItem('jwt');
+  try {
+    const response = await fetch(`${API_BASE_URL}/patients/${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Failed to delete patient');
+    navigate('/patients');
+  } catch (err) {
+    console.error(err);
+  }
+};
+
   if (loading) return <Loader />;
   if (error)   return <Alert color='red'>{error}</Alert>;
   if (!patient) return null;
@@ -92,15 +107,37 @@ function PatientDetail() {
       <Button variant='subtle' mb='md' onClick={() => navigate('/patients')}>
         Back to Patients
       </Button>
-      <Card shadow='sm' padding='xl' radius='md' withBorder mb='md'>
-        <Stack gap='sm'>
-          <Title order={2}>{patient.firstName} {patient.lastName}</Title>
-          <Text>Address: {patient.address}</Text>
-          {patient.allergies?.length > 0 && (
-            <Text c='red'>Allergies: {patient.allergies.join(', ')}</Text>
-          )}
-        </Stack>
-      </Card>
+
+<Card shadow='sm' padding='xl' radius='md' withBorder mb='md'>
+  <Stack gap='sm'>
+    <Group justify='space-between' align='flex-start'>
+      <Title order={2}>{patient.firstName} {patient.lastName}</Title>
+      {isPharmacist && (
+        <Button color='red' variant='light' onClick={() => setDeleteModalOpen(true)}>
+          Delete Patient
+        </Button>
+      )}
+    </Group>
+    <Text>Address: {patient.address}</Text>
+    {patient.allergies?.length > 0 && (
+      <Text c='red'>Allergies: {patient.allergies.join(', ')}</Text>
+    )}
+  </Stack>
+</Card>
+
+<Modal
+  opened={deleteModalOpen}
+  onClose={() => setDeleteModalOpen(false)}
+  title='Delete Patient'
+  centered
+>
+  <Text mb='md'>Are you sure? <br />
+    All the medication profile(s) will also be deleted, too.</Text>
+  <Group justify='flex-end'>
+    <Button variant='default' onClick={() => setDeleteModalOpen(false)}>Cancel</Button>
+    <Button color='red' onClick={deletePatient}>Delete</Button>
+  </Group>
+</Modal>
 
       <Title order={3} mb='sm'>Medication Profile</Title>
       { isPharmacist && (
