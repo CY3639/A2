@@ -20,7 +20,9 @@ function Medications() {
   const [medications, setMedications] = useState([]);
   const [initialLoad, setInitialLoad] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
-  const [refreshKey, setRefreshKey] = useState(0);
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [selectedMedication, setSelectedMedication] = useState(null);
+  const [refresh, setRefresh] = useState(0);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
@@ -66,7 +68,7 @@ function Medications() {
     };
 
     fetchMedications();
-  }, [search, page, refreshKey]);
+  }, [search, page, refresh]);
 
   const createMedication = async (data) => {
     const token = localStorage.getItem('jwt');
@@ -81,10 +83,32 @@ function Medications() {
         return body.errors;
       }
       if (!response.ok) throw new Error('Failed to create medication');
-      setRefreshKey(prev => prev + 1);
+      setRefresh(prev => prev + 1);
       return null;
     } catch (err) { console.error(err); }
   };
+
+const updateMedication = async (data) => {
+  const token = localStorage.getItem('jwt');
+  try {
+    const response = await fetch(`${API_BASE_URL}/medications/${selectedMedication._id}`, {
+      method: 'PUT',
+      headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (response.status === 409) {
+      const body = await response.json();
+      return body.errors;
+    }
+    if (!response.ok) throw new Error('Failed to update medication');
+    setRefresh(prev => prev + 1);
+    setEditModalOpen(false);
+    setSelectedMedication(null);
+    return null;
+  } catch (err) {
+    console.error(err);
+  }
+};
 
   const deleteMedication = async (id) => {
     const token = localStorage.getItem('jwt');
@@ -127,9 +151,24 @@ function Medications() {
       />
 
       {medications.map(m => (
-        <MedicationItem key={m._id} medication={m} onDelete={deleteMedication} />
+        <MedicationItem
+          key={m._id}
+          medication={m}
+          onDelete={deleteMedication}
+          onEdit={(med) => {
+            setSelectedMedication(med);
+            setEditModalOpen(true);
+          }}
+        />
       ))}
       {medications.length === 0 && <p>No medications found.</p>}
+
+      <MedicationForm
+        opened={editModalOpen}
+        onClose={() => { setEditModalOpen(false); setSelectedMedication(null); }}
+        onSubmit={updateMedication}
+        medication={selectedMedication}
+      />
 
       {!search.trim() && (
         <Pagination
