@@ -170,31 +170,7 @@
             "url": {
               "raw": "{{baseUrl}}/patients?page=1&limit=10",
               "host": ["{{baseUrl}}"],
-              "path": ["patients"],
-              "query": [
-                {
-                  "key": "page",
-                  "value": "1",
-                  "description": "Page number (default: 1)"
-                },
-                {
-                  "key": "limit",
-                  "value": "10",
-                  "description": "Results per page (default: 10)"
-                },
-                {
-                  "key": "sortBy",
-                  "value": "lastName",
-                  "description": "Field to sort by",
-                  "disabled": true
-                },
-                {
-                  "key": "sortOrder",
-                  "value": "asc",
-                  "description": "asc or desc",
-                  "disabled": true
-                }
-              ]
+              "path": ["patients"]
             },
             "description": "Get all patients (paginated). Pagination navigation links are returned in the Link response header."
           }
@@ -244,7 +220,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Doe\",\n  \"address\": \"123 Main St, Brisbane QLD 4000\"\n}",
+              "raw": "{\n  \"firstName\": \"Emily\",\n  \"lastName\": \"Doe\",\n  \"address\": \"123 Main St, Brisbane QLD 4000\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -313,25 +289,7 @@
             "url": {
               "raw": "{{baseUrl}}/medications?page=1&limit=10",
               "host": ["{{baseUrl}}"],
-              "path": ["medications"],
-              "query": [
-                {
-                  "key": "page",
-                  "value": "1",
-                  "description": "Page number (default: 1)"
-                },
-                {
-                  "key": "limit",
-                  "value": "10",
-                  "description": "Results per page (default: 10)"
-                },
-                {
-                  "key": "activeIngredient",
-                  "value": "paracetamol",
-                  "description": "Filter by active ingredient (case-insensitive)",
-                  "disabled": true
-                }
-              ]
+              "path": ["medications"]
             },
             "description": "Get all medications (paginated). Pagination navigation links are returned in the Link response header."
           }
@@ -347,7 +305,7 @@
               "path": ["medications", "search"],
               "query": [
                 {
-                  "key": "activeIngredient",
+                  "key": "medicationName",
                   "value": "paracetamol",
                   "description": "Active ingredient to search for (case-insensitive)"
                 }
@@ -381,7 +339,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"brandName\": \"Panadol\",\n  \"activeIngredient\": \"Paracetamol\",\n  \"strength\": \"500mg\",\n  \"form\": \"tablet\"\n}",
+              "raw": "{\n  \"brandName\": \"Staphlex\",\n  \"activeIngredient\": \"flucloxacillin\",\n  \"strength\": \"500mg\",\n  \"form\": \"capsule\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -450,19 +408,7 @@
             "url": {
               "raw": "{{baseUrl}}/patients/{{patientId}}/medicationProfiles?page=1&limit=10",
               "host": ["{{baseUrl}}"],
-              "path": ["patients", "{{patientId}}", "medicationProfiles"],
-              "query": [
-                {
-                  "key": "page",
-                  "value": "1",
-                  "description": "Page number (default: 1)"
-                },
-                {
-                  "key": "limit",
-                  "value": "10",
-                  "description": "Results per page (default: 10)"
-                }
-              ]
+              "path": ["patients", "{{patientId}}", "medicationProfiles"]
             },
             "description": "Get all medication profiles for a specific patient (paginated). Pagination navigation links are returned in the Link response header."
           }
@@ -492,7 +438,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"medication\": \"{{medicationId}}\",\n  \"dose\": \"500mg\",\n  \"frequency\": \"twice daily\",\n  \"status\": \"active\",\n  \"startDate\": \"2025-01-01\",\n  \"notes\": \"Take with food\"\n}",
+              "raw": "{\n  \"medication\": \"{{medicationId}}\",\n  \"dose\": \"500mg\",\n  \"frequency\": \"twice daily\",\n  \"status\": \"active\",\n  \"startDate\": \"2026-04-15\",\n  \"notes\": \"Take with food\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
@@ -519,7 +465,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"dose\": \"1000mg\",\n  \"frequency\": \"once daily\",\n  \"status\": \"ceased\",\n  \"endDate\": \"2025-06-01\",\n  \"notes\": \"Dosage increased by pharmacist\"\n}",
+              "raw": "{\n  \"dose\": \"1000mg\",\n  \"frequency\": \"once daily\",\n  \"status\": \"ceased\",\n  \"endDate\": \"2026-04-18\",\n  \"notes\": \"Dosage increased by specialist\"\n}",
               "options": {
                 "raw": {
                   "language": "json"
