@@ -6,6 +6,17 @@ import MedicationProfileForm from '../components/MedicationProfileForm';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+const getIsPharmacist = () => {
+  const token = localStorage.getItem('jwt');
+  if (!token) return false;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.isPharmacist === true;
+  } catch {
+    return false;
+  }
+};
+
 function PatientDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -15,6 +26,7 @@ function PatientDetail() {
   const [error, setError]         = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [refresh, setRefresh]     = useState(0);
+  const isPharmacist = getIsPharmacist();
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -91,7 +103,9 @@ function PatientDetail() {
       </Card>
 
       <Title order={3} mb='sm'>Medication Profile</Title>
+      { isPharmacist && (
       <Button mb='md' onClick={() => setModalOpen(true)}>Add Medication</Button>
+      )}
 
       <MedicationProfileForm
         opened={modalOpen}

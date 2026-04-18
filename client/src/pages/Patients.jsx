@@ -5,6 +5,17 @@ import PatientForm from '../components/PatientForm';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+const getIsPharmacist = () => {
+  const token = localStorage.getItem('jwt');
+  if (!token) return false;
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.isPharmacist === true;
+  } catch {
+    return false;
+  }
+};
+
 function Patients() {
   const [patients, setPatients] = useState([]);
   const [initialLoad, setInitialLoad] = useState(true);
@@ -16,6 +27,7 @@ function Patients() {
   const [page, setPage] = useState(1);
   const [paginationLinks, setPaginationLinks] = useState({});
   const [refetch, setRefetch] = useState(0);
+  const isPharmacist = getIsPharmacist();
 
   useEffect(() => {
     const fetchPatients = async () => {
@@ -53,7 +65,7 @@ function Patients() {
     fetchPatients();
   }, [search, sortBy, sortOrder, page, refetch]);
 
-  const createPatient = async (patientData) => {
+  const createPatient = async (patientData) => {    
     const token = localStorage.getItem('jwt');
     try {
       const response = await fetch(`${API_BASE_URL}/patients`, {
@@ -73,7 +85,10 @@ function Patients() {
     <Container size='lg'>
       <Title order={2} mb='md'>Patients</Title>
 
-      <Button mb='md' onClick={() => setModalOpen(true)}>Add Patient</Button>
+      { isPharmacist && (
+        <Button mb='md' onClick={() => setModalOpen(true)}>Add Patient</Button>
+      )}
+
       <PatientForm
         opened={modalOpen}
         onClose={() => setModalOpen(false)}

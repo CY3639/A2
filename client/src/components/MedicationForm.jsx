@@ -1,7 +1,9 @@
+import { useState } from 'react';
 import { Modal, TextInput, Select, Button, Group } from '@mantine/core';
 import { useForm } from '@mantine/form';
 
 function MedicationForm({ opened, onClose, onSubmit }) {
+  const [serverError, setServerError] = useState('');
   const form = useForm({
     initialValues: { activeIngredient: '', brandName: '', strength: '', form: '' },
     validate: {
@@ -12,8 +14,13 @@ function MedicationForm({ opened, onClose, onSubmit }) {
     },
   });
 
-  const handleSubmit = (values) => {
-    onSubmit(values);
+  const handleSubmit = async(values) => {
+    setServerError('');
+    const error = await onSubmit(values);
+    if (error) {
+      setServerError(error);
+      return;
+    }
     form.reset();
     onClose();
   };
@@ -31,6 +38,9 @@ function MedicationForm({ opened, onClose, onSubmit }) {
           data={['tablet', 'capsule', 'liquid', 'other']}
           {...form.getInputProps('form')}
         />
+
+        {serverError && <Text c="red" size="sm" mb="sm">{serverError}</Text>}
+
         <Group justify='flex-end' mt='md'>
           <Button variant='default' onClick={onClose}>Cancel</Button>
           <Button type='submit'>Save</Button>
