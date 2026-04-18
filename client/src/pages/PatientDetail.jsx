@@ -98,6 +98,20 @@ const deletePatient = async () => {
   }
 };
 
+const deleteProfile = async (profileId) => {
+  const token = localStorage.getItem('jwt');
+  try {
+    const response = await fetch(`${API_BASE_URL}/patients/${id}/medicationProfiles/${profileId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (!response.ok) throw new Error('Failed to delete medication profile');
+    setRefresh(r => r + 1);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
   if (loading) return <Loader />;
   if (error)   return <Alert color='red'>{error}</Alert>;
   if (!patient) return null;
@@ -108,52 +122,49 @@ const deletePatient = async () => {
         Back to Patients
       </Button>
 
-<Card shadow='sm' padding='xl' radius='md' withBorder mb='md'>
-  <Stack gap='sm'>
-    <Group justify='space-between' align='flex-start'>
-      <Title order={2}>{patient.firstName} {patient.lastName}</Title>
-      {isPharmacist && (
-        <Button color='red' variant='light' onClick={() => setDeleteModalOpen(true)}>
-          Delete Patient
-        </Button>
-      )}
-    </Group>
-    <Text>Address: {patient.address}</Text>
-    {patient.allergies?.length > 0 && (
-      <Text c='red'>Allergies: {patient.allergies.join(', ')}</Text>
+    <Card shadow='sm' padding='xl' radius='md' withBorder mb='md'>
+      <Stack gap='sm'>
+        <Group justify='space-between' align='flex-start'>
+          <Title order={2}>{patient.firstName} {patient.lastName}</Title>
+          {isPharmacist && (
+            <Button color='red' variant='light' onClick={() => setDeleteModalOpen(true)}>
+              Delete Patient
+            </Button>
+          )}
+        </Group>
+        <Text>Address: {patient.address}</Text>
+      </Stack>
+    </Card>
+
+    <Modal
+      opened={deleteModalOpen}
+      onClose={() => setDeleteModalOpen(false)}
+      title='Delete Patient'
+      centered
+    >
+      <Text mb='md'>Are you sure? <br />
+        All the medication profile(s) will also be deleted, too.</Text>
+      <Group justify='flex-end'>
+        <Button variant='default' onClick={() => setDeleteModalOpen(false)}>Cancel</Button>
+        <Button color='red' onClick={deletePatient}>Delete</Button>
+      </Group>
+    </Modal>
+
+    <Title order={3} mb='sm'>Medication Profile</Title>
+    { isPharmacist && (
+    <Button mb='md' onClick={() => setModalOpen(true)}>Add Medication</Button>
     )}
-  </Stack>
-</Card>
 
-<Modal
-  opened={deleteModalOpen}
-  onClose={() => setDeleteModalOpen(false)}
-  title='Delete Patient'
-  centered
->
-  <Text mb='md'>Are you sure? <br />
-    All the medication profile(s) will also be deleted, too.</Text>
-  <Group justify='flex-end'>
-    <Button variant='default' onClick={() => setDeleteModalOpen(false)}>Cancel</Button>
-    <Button color='red' onClick={deletePatient}>Delete</Button>
-  </Group>
-</Modal>
+    <MedicationProfileForm
+      opened={modalOpen}
+      onClose={() => setModalOpen(false)}
+      onSubmit={createMedicationProfile}
+    />
 
-      <Title order={3} mb='sm'>Medication Profile</Title>
-      { isPharmacist && (
-      <Button mb='md' onClick={() => setModalOpen(true)}>Add Medication</Button>
-      )}
-
-      <MedicationProfileForm
-        opened={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onSubmit={createMedicationProfile}
-      />
-
-      {profiles.length === 0
-        ? <Text c='dimmed'>No medication profile entries found.</Text>
-        : profiles.map(p => <ProfileEntry key={p._id} profile={p} onCease={ceaseMedication} />)
-      }
+    {profiles.length === 0
+      ? <Text c='dimmed'>No medication profile entries found.</Text>
+      : profiles.map(p => <ProfileEntry key={p._id} profile={p} onCease={ceaseMedication} onDelete={deleteProfile}/>)
+    }
 
     </Container>
   );
