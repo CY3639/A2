@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "vite build && sudo rm -rf /var/www/a02 && sudo mkdir -p /var/www/a02 && sudo mv dist/* /var/www/a02 && sudo chown -R caddy:caddy /var/www/a02 && sudo chmod -R 755 /var/www/a02"
   },
   "dependencies": {
     "@mantine/core": "^9.0.2",
