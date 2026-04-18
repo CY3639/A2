@@ -1,4 +1,4 @@
-import { Card, Text, Badge, Group, Stack, Button } from '@mantine/core';
+import { Card, Text, Group, Stack, Button } from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
  
 function PatientCard({ patient }) {
