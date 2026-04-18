@@ -3,6 +3,7 @@ import { Container, Title, Text, Loader, Alert, Button, Card, Stack, Modal, Grou
 import { useParams, useNavigate } from 'react-router-dom';
 import ProfileEntry from '../components/ProfileEntry';
 import MedicationProfileForm from '../components/MedicationProfileForm';
+import PatientForm from '../components/PatientForm';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -25,6 +26,7 @@ function PatientDetail() {
   const [loading, setLoading]     = useState(true);
   const [error, setError]         = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [editModalOpen, setEditModalOpen] = useState(false);
   const [refresh, setRefresh]     = useState(0);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const isPharmacist = getIsPharmacist();
@@ -84,6 +86,25 @@ function PatientDetail() {
   }
 };
 
+const updatePatient = async (patientData) => {
+  const token = localStorage.getItem('jwt');
+  try {
+    const response = await fetch(`${API_BASE_URL}/patients/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(patientData),
+    });
+    if (!response.ok) throw new Error('Failed to update patient');
+    setRefresh(r => r + 1);
+    setEditModalOpen(false);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 const deletePatient = async () => {
   const token = localStorage.getItem('jwt');
   try {
@@ -127,9 +148,14 @@ const deleteProfile = async (profileId) => {
         <Group justify='space-between' align='flex-start'>
           <Title order={2}>{patient.firstName} {patient.lastName}</Title>
           {isPharmacist && (
-            <Button color='red' variant='light' onClick={() => setDeleteModalOpen(true)}>
-              Delete Patient
-            </Button>
+            <Group>
+              <Button variant='light' onClick={() => setEditModalOpen(true)}>
+                Edit Patient
+              </Button>
+              <Button color='red' variant='light' onClick={() => setDeleteModalOpen(true)}>
+                Delete Patient
+              </Button>
+            </Group>
           )}
         </Group>
         <Text>Address: {patient.address}</Text>
@@ -149,6 +175,13 @@ const deleteProfile = async (profileId) => {
         <Button color='red' onClick={deletePatient}>Delete</Button>
       </Group>
     </Modal>
+
+    <PatientForm
+      opened={editModalOpen}
+      onClose={() => setEditModalOpen(false)}
+      onSubmit={updatePatient}
+      patient={patient}
+    />
 
     <Title order={3} mb='sm'>Medication Profile</Title>
     { isPharmacist && (
