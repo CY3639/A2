@@ -20,6 +20,7 @@ function Medications() {
   const [medications, setMedications] = useState([]);
   const [initialLoad, setInitialLoad] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
   const [error, setError] = useState(null);
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
@@ -65,17 +66,23 @@ function Medications() {
     };
 
     fetchMedications();
-  }, [search, page]);
+  }, [search, page, refreshKey]);
 
-  const createMedication = async (medData) => {
+  const createMedication = async (data) => {
     const token = localStorage.getItem('jwt');
     try {
       const response = await fetch(`${API_BASE_URL}/medications`, {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(medData)
+        body: JSON.stringify(data)
       });
+      if (response.status === 409) {
+        const body = await response.json();
+        return body.errors;
+      }
       if (!response.ok) throw new Error('Failed to create medication');
+      setRefreshKey(prev => prev + 1);
+      return null;
     } catch (err) { console.error(err); }
   };
 
