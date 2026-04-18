@@ -11,7 +11,7 @@ const getIsPharmacist = () => {
   }
 };
 
-function MedicationItem({ medication, onDelete }) {
+function MedicationItem({ medication, onDelete, onEdit }) {
   const isPharmacist = getIsPharmacist();
   return (
     <Card shadow='sm' padding='lg' radius='md' withBorder mb='sm'>
@@ -22,18 +22,16 @@ function MedicationItem({ medication, onDelete }) {
         </Group>
         <Text size='sm' c='dimmed'>Active ingredient: {medication.activeIngredient}</Text>
         <Text size='sm' c='dimmed'>Strength: {medication.strength}</Text>
-        <Group justify='flex-end'>
-          { isPharmacist && (
-          <Button
-            size='xs'
-            color='red'
-            variant='light'
-            onClick={() => onDelete(medication._id)}
-          >
-            Delete
-          </Button>
-          )}
-        </Group>
+        {isPharmacist && (
+          <Group justify='flex-end'>
+            <Button size='xs' variant='light' onClick={() => onEdit(medication)}>
+              Edit
+            </Button>
+            <Button size='xs' color='red' variant='light' onClick={() => onDelete(medication._id)}>
+              Delete
+            </Button>
+          </Group>
+        )}
       </Stack>
     </Card>
   );
