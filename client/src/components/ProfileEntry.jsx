@@ -11,7 +11,7 @@ const getIsPharmacist = () => {
   }
 };
 
-function ProfileEntry({ profile, onCease }) {
+function ProfileEntry({ profile, onCease, onDelete }) {
   const isPharmacist = getIsPharmacist();
   const statusColor = profile.status === 'active' ? 'teal' : 'gray';
   return (
@@ -24,8 +24,13 @@ function ProfileEntry({ profile, onCease }) {
           <Group gap='xs'>
             <Badge color={statusColor} variant='light'>{profile.status}</Badge>
             {profile.status === 'active' && onCease && isPharmacist && (
-              <Button size='xs' color='red' variant='light' onClick={() => onCease(profile._id)}>
+              <Button size='xs' color='orange' variant='light' onClick={() => onCease(profile._id)}>
                 Cease
+              </Button>
+            )}
+            {onDelete && isPharmacist && (
+              <Button size='xs' color='red' variant='light' onClick={() => onDelete(profile._id)}>
+                Delete
               </Button>
             )}
           </Group>
