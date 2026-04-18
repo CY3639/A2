@@ -39,7 +39,7 @@ function Layout() {
       to={link.link}
       onClick={() => setActive(link.link)}
       style={{ marginRight: '15px' }}
-      c={active === link.link ? 'teal' : 'gray'}
+      c={active === link.link ? 'navy' : 'gray'}
     >
       {link.label}
     </Anchor>
@@ -50,16 +50,16 @@ function Layout() {
       <AppShell.Header>
         <Container size='lg'>
           <Group justify='space-between' h={55} align='center'>
-            <Text size='xl' fw={700} c='teal'>MedProfile</Text>
+            <Anchor component={Link} to='/' size='xl' fw={700} c='blue'>MedProfile</Anchor>
             <Group gap='xs' align='center'>
               {items}
               {isPharmacist && (
-                <Anchor component={Link} to='/admin' c='teal'>Approvals</Anchor>
+                <Anchor component={Link} to='/admin' c='blue'>Approvals</Anchor>
               )}
               {!isAuthenticated ? (
                 <>
-                  <Anchor component={Link} to='/login' c='teal'>Login</Anchor>
-                  <Anchor component={Link} to='/register' c='teal'>Register</Anchor>
+                  <Anchor component={Link} to='/login' c='blue'>Login</Anchor>
+                  <Anchor component={Link} to='/register' c='blue'>Register</Anchor>
                 </>
               ) : (
                 <Anchor component='button' onClick={handleLogout} c='red'>
