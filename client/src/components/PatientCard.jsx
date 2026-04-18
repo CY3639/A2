@@ -8,11 +8,6 @@ function PatientCard({ patient }) {
       <Stack gap='xs'>
         <Group justify='space-between'>
           <Text fw={600}>{patient.firstName} {patient.lastName}</Text>
-          {patient.allergies?.length > 0 && (
-            <Badge color='red' variant='light'>
-              Allergies: {patient.allergies.join(', ')}
-            </Badge>
-          )}
         </Group>
         <Text size='sm' c='dimmed'>Address: {patient.address}</Text>
         <Button size='xs' variant='light'
