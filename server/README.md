@@ -12,19 +12,6 @@ The API is deployed at: `https://lyrebird04.ifn666.com/a02/api`
 
 ---
 
-## Features
-
-- **Role-based access control** — Pharmacists and Pharmacy Assistants have distinct permissions enforced at the route level via JWT claims.
-- **Staff approval workflow** — Newly registered accounts are inactive until approved by a Pharmacist, with endpoints to list, approve, and decline pending registrations.
-- **Patient management** — Full CRUD for patient records, with name-based search and sort.
-- **Medication catalogue** — Full CRUD for the medication catalogue, with active-ingredient-based search.
-- **Medication profiles** — Full CRUD for a patient's medication history, nested under the patient resource. Each profile links a patient to a medication with dosage, frequency, status, and date fields.
-- **Input validation** — All write endpoints validate request bodies using `express-validator`, returning structured error messages on invalid input.
-- **Pagination** — All list endpoints are paginated using `mongoose-paginate-v2`. Navigation links (first, prev, next, last) are provided via the HTTP `Link` response header.
-- **CORS support** — The `Link` and `Authorization` headers are explicitly exposed to support browser clients.
-
----
-
 ## API Endpoints
 
 All endpoints are prefixed with `/api`. Protected endpoints require a `Bearer` token in the `Authorization` header.
@@ -76,7 +63,7 @@ All endpoints are prefixed with `/api`. Protected endpoints require a `Bearer` t
 | `page` | integer | Page number (default: 1) |
 | `limit` | integer | Results per page (default: 10) |
 | `sortBy` | string | Field to sort by (e.g. `lastName`) |
-| `sortOrder` | string | `asc` or `desc` |
+| `sortOrder` | string | `asc` |
 
 **Query parameters for GET `/patients/search`:**
 
@@ -124,6 +111,62 @@ All endpoints are prefixed with `/api`. Protected endpoints require a `Bearer` t
 | Method | Endpoint | Access | Description |
 |--------|----------|--------|-------------|
 | GET | `/health` | Public | Returns server uptime status |
+
+---
+
+## How to Contribute
+
+1. Fork the repository and clone it to your local machine.
+2. Create a new branch for your feature or fix - use a descriptive name, e.g. `feature/medication-search` or `fix/profile-validation`.
+3. Make your changes, following the existing layered structure: routes define paths, controllers hold logic, models define data.
+4. Ensure all new endpoints include appropriate input validation via `express-validator` and return correct HTTP status codes.
+5. Test your changes against the API using Hoppscotch or Postman before opening a pull request. Update `API-collection.json` if you add or modify any endpoints.
+6. Commit with clear, descriptive messages (e.g. `Add search by brand name to medication list endpoint`).
+7. Push to your fork and open a Pull Request against the `main` branch with a description of what was changed and why.
+
+---
+
+## Features
+
+- **Role-based access control** — Pharmacists and Pharmacy Assistants have distinct permissions enforced at the route level via JWT claims.
+- **Staff approval workflow** — Newly registered accounts are inactive until approved by a Pharmacist, with endpoints to list, approve, and decline pending registrations.
+- **Patient management** — Full CRUD for patient records, with name-based search and sort.
+- **Medication catalogue** — Full CRUD for the medication catalogue, with active-ingredient-based search.
+- **Medication profiles** — Full CRUD for a patient's medication history, nested under the patient resource. Each profile links a patient to a medication with dosage, frequency, status, and date fields.
+- **Input validation** — All write endpoints validate request bodies using `express-validator`, returning structured error messages on invalid input.
+- **Pagination** — All list endpoints are paginated using `mongoose-paginate-v2`. Navigation links (first, prev, next, last) are provided via the HTTP `Link` response header.
+- **CORS support** — The `Link` and `Authorization` headers are explicitly exposed to support browser clients.
+
+---
+
+## Dependencies
+
+Listed in `package.json`. Install all dependencies with:
+
+```bash
+npm install
+```
+
+| Package | Purpose |
+|---------|---------|
+| `express` | Web framework — handles HTTP routing and middleware |
+| `mongoose` | MongoDB ODM — defines schemas, models, and database queries |
+| `mongoose-paginate-v2` | Adds `.paginate()` to Mongoose models for server-side pagination |
+| `bcrypt` | Hashes and verifies user passwords before storing to the database |
+| `jsonwebtoken` | Issues and verifies JWT tokens for stateless authentication |
+| `express-validator` | Validates and sanitises request body fields on write endpoints |
+| `express-async-handler` | Wraps async controller functions to forward errors to Express error handling |
+| `cors` | Enables Cross-Origin Resource Sharing, exposing `Authorization` and `Link` headers |
+| `dotenv` | Loads environment variables from a `.env` file |
+| `mongodb` | MongoDB Node.js driver (peer dependency for Mongoose) |
+
+**Environment variables required in `.env`:**
+
+```
+PORT=3000
+MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/<dbname>
+JWT_SECRET=<your_secret_key>
+```
 
 ---
 
@@ -175,9 +218,9 @@ server/
 
 **Data model relationships:**
 
-- A `MedicationProfile` belongs to one `Patient` (many-to-one)
-- A `MedicationProfile` references one `Medication` from the catalogue (many-to-one)
-- A `Patient` can have many `MedicationProfiles` (one-to-many)
+- A `Patient` has many `MedicationProfiles` (one-to-many)
+- A `MedicationProfile` contains `Medication` entries (many-to-one)
+- A `Medication` can be referenced across many `MedicationProfiles` and many `Patients` (many-to-many via `MedicationProfile`)
 
 **Request lifecycle:**
 
@@ -186,49 +229,6 @@ server/
 3. Route-level middleware runs in order: JWT authentication, role authorisation, input validation, pagination parameter parsing.
 4. The controller handler executes business logic, queries the model, and sends the response.
 5. Pagination metadata is written to the `Link` response header before the JSON body is sent.
-
----
-
-## Dependencies
-
-Listed in `package.json`. Install all dependencies with:
-
-```bash
-npm install
-```
-
-| Package | Purpose |
-|---------|---------|
-| `express` | Web framework — handles HTTP routing and middleware |
-| `mongoose` | MongoDB ODM — defines schemas, models, and database queries |
-| `mongoose-paginate-v2` | Adds `.paginate()` to Mongoose models for server-side pagination |
-| `bcrypt` | Hashes and verifies user passwords before storing to the database |
-| `jsonwebtoken` | Issues and verifies JWT tokens for stateless authentication |
-| `express-validator` | Validates and sanitises request body fields on write endpoints |
-| `express-async-handler` | Wraps async controller functions to forward errors to Express error handling |
-| `cors` | Enables Cross-Origin Resource Sharing, exposing `Authorization` and `Link` headers |
-| `dotenv` | Loads environment variables from a `.env` file |
-| `mongodb` | MongoDB Node.js driver (peer dependency for Mongoose) |
-
-**Environment variables required in `.env`:**
-
-```
-PORT=3000
-MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/<dbname>
-JWT_SECRET=<your_secret_key>
-```
-
----
-
-## How to Contribute
-
-1. Fork the repository and clone it to your local machine.
-2. Create a new branch for your feature or fix - use a descriptive name, e.g. `feature/medication-search` or `fix/profile-validation`.
-3. Make your changes, following the existing layered structure: routes define paths, controllers hold logic, models define data.
-4. Ensure all new endpoints include appropriate input validation via `express-validator` and return correct HTTP status codes.
-5. Test your changes against the API using Hoppscotch or Postman before opening a pull request. Update `API-collection.json` if you add or modify any endpoints.
-6. Commit with clear, descriptive messages (e.g. `Add search by brand name to medication list endpoint`).
-7. Push to your fork and open a Pull Request against the `main` branch with a description of what was changed and why.
 
 ---
 
