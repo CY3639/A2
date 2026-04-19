@@ -8,7 +8,7 @@ This is the server-side component of a Pharmacy Patient Medication Profile Manag
 
 The system enforces a two-tier role model: **Pharmacists** have full read/write access across all resources, while **Pharmacy Assistants** have read-only access. New staff accounts require pharmacist approval before they can log in, preventing unauthorised access to sensitive patient data.
 
-The API is deployed at: `https://lyrebird04.ifn666.com/a02/api`
+The API is deployed at: `https://lyrebird04.ifn666.com/a02/`
 
 ---
 
